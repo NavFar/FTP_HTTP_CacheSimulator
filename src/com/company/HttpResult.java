@@ -1,4 +1,5 @@
 package com.company;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -57,8 +58,14 @@ public class HttpResult {
             System.exit(1);
         }
     }
-    public HttpResult(StringBuilder allContent){
-        String content=allContent.toString();
+    public HttpResult(byte[] allContent,int dummy){
+        String content=new String(allContent);
+        String header=new String ();
+        int headerEndIndex = content.indexOf("\r\n\r\n");
+        if(headerEndIndex!=-1){
+            header=content.substring(0,headerEndIndex+4);
+        }
+        byte[] byteContent= Arrays.copyOfRange(allContent, header.getBytes().length,allContent.length);
         int code=0;
         int index=content.indexOf(" ");
         content=content.substring(index+1);
@@ -74,10 +81,10 @@ public class HttpResult {
         }
         index = content.indexOf("\r\n\r\n");
         if(index!=-1){
-            content=content.substring(index+1).trim();
+            content=content.substring(index+4).trim();
         }
         this.statusCode=code;
-        this.content = content.getBytes();
+        this.content=byteContent;
         date=date.trim();
         SimpleDateFormat simpleDateFormat= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
         try {
