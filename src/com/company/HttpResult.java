@@ -67,6 +67,7 @@ public class HttpResult {
         }
         byte[] byteContent= Arrays.copyOfRange(allContent, header.getBytes().length,allContent.length);
         int code=0;
+
         int index=content.indexOf(" ");
         content=content.substring(index+1);
         index=content.indexOf(" ");
